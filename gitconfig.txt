@@ -1,0 +1,56 @@
+import os
+from git import Repo
+
+# create folder and go into it
+os.mkdir("Scythe")
+os.chdir("Scythe")
+
+# init git
+repo = Repo.init(".")
+
+# create a file and rename it
+with open("README", "w") as f:
+    f.write("This is a README file\n")
+
+os.rename("README", "README.txt")
+
+# add and commit
+repo.index.add(["README.txt"])
+repo.index.commit("First commit")
+
+# URL
+url = "https://github.com/ramiparvin786/lab1demo.git"
+
+# add remote
+try:
+    remote = repo.create_remote("origin", url)
+except:
+    remote = repo.remotes.origin
+
+# pull (if needed)
+try:
+    remote.pull()
+except:
+    pass
+
+# status
+print(repo.git.status())
+
+# modify file
+with open("README.txt", "a") as f:
+    f.write("Extra line added\n")
+
+# show diff
+print(repo.git.diff())
+
+# commit again
+repo.index.add(["README.txt"])
+repo.index.commit("Second commit")
+
+# show log
+for c in repo.iter_commits():
+    print(c.message)
+
+# create branch and switch
+branch = repo.create_head("feature")
+branch.checkout()
